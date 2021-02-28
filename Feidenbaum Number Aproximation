@@ -36,3 +36,94 @@ l=list(range(0, n))
 plt.plot(l,vector_xn, 'ro')
 plt.show()
 
+# BIFURCATION MAP
+
+def bifurcation_map(rmin,rmax,rstep,n,k,x0):
+    rvector=np.arange(rmin, rmax+rstep, rstep)          #Entrega un vector espaciado de valores de R. n es interaciones y k el cuantos se eliminan inicialmente (transiente).
+    aux2=np.zeros(n)                                    #Vector de inicio de la iteración, no se grafica, sólo sirva para alojar valores.
+    x=x0                                                #Se cambia a x sólo para diferenciar la programación, no tiene impacto.
+    for i in range(len(rvector)):                       #El loop evalúa todos los valores de R.
+        subArray = logistic_map(rvector[i],n,x)         #Toma la función anterior y la evalúa por cada R. Entrega un vector de 1xn con todos los valores de la función. Al encontrar un punto fijo, el valor se repite.
+        subArrayk=np.unique(subArray[k:])               #Sacando los primeros k-valores del vector (transiente), se dejan sólo los valores únicos (puntos fijos).
+        aux1=np.zeros(n-len(subArrayk))                 #Se crea un vector auxiliar de 0's para concatenar a los valores anteriores. Tiene largo n - (número de puntos fijos).
+        aux1=np.concatenate((subArrayk, aux1), axis=0)  #Se concatena el vector final, dejando los puntos fijos al inicio seguido de 0's
+        aux2=np.vstack([aux2, aux1])                    #Se añade cada vector generado hacia abajo en cada loop.
+                                                  
+    aux3=[0]                                            #vector auxiliar para igualar la dimensión para graficar
+    aux4=np.concatenate((rvector, aux3), axis=0)        #Se concatena el vector.
+    aux4[aux4==0]=np.nan                                #Se reemplazan los 0's con NaN del auxiliar para no graficarlos. 
+    aux2[aux2==0]=np.nan                                #Se reemplazan los 0's con NaN del auxiliar para no graficarlos.
+    for i in range(n):                                  #Se grafica cada una de las filas por separado sobreponiendo en el mismo gráfico.
+        plt.plot(aux4, aux2[:, i],'k,', label = 'data')
+        fig = plt.gcf()
+        fig.set_size_inches(18.5, 10.5)                 #Se agranda el gráfico a dimensiones mayores a las dada por defecto.
+ 
+#REVISIÓN DE B1, LA PRIMERA BIFURCACIÓN
+from datetime import datetime
+start_time = datetime.now()
+
+x0=0.2
+rmin=2.995
+rmax=3.001
+rstep=0.000001
+n=10000
+k=5000
+bifurcation_map(rmin,rmax,rstep,n,k,x0)
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
+
+start_time = datetime.now()
+
+x0=0.2
+rmin=1
+rmax=4
+rstep=0.001
+n=1000
+k=500
+bifurcation_map(rmin,rmax,rstep,n,k,x0)
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
+
+#REVISIÓN DE B2, LA SEGUNDA BIFURCACIÓN
+start_time = datetime.now()
+
+x0=0.2
+rmin=3.446
+rmax=3.448
+rstep=0.000001
+n=10000
+k=5000
+bifurcation_map(rmin,rmax,rstep,n,k,x0)
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
+
+#REVISIÓN DE B3 LA TERCERA BIFURCACIÓN
+start_time = datetime.now()
+
+x0=0.2
+rmin=3.543
+rmax=3.545
+rstep=0.000001
+n=10000
+k=5000
+bifurcation_map(rmin,rmax,rstep,n,k,x0)
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
+
+#REVISIÓN DE B4 LA CUARTA BIFURCACIÓN
+start_time = datetime.now()
+
+x0=0.2
+rmin=3.5643
+rmax=3.5645
+rstep=0.0000001
+n=10000
+k=5000
+bifurcation_map(rmin,rmax,rstep,n,k,x0)
+
+end_time = datetime.now()
+print('Duration: {}'.format(end_time - start_time))
