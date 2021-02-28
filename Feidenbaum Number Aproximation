@@ -1,0 +1,38 @@
+#An initial condition x0
+#An rmin and an rmax that specify a range of r values for the x-axis of your bifurcation plot
+#An rstep, which specifies how many "slices" your plot has
+#A number n of total iterates to perform
+#A number k of total iterates to discard without plotting (i.e., to remove the transient)
+
+#Check your program by constructing a bifurcation plot for  with a step size of 0.01.  
+#For each r, construct a 1000-iterate trajectory from x0 = 0.2, and discard the first five points -- 
+#i.e., plot x5 to x1000 for each r.  The overall structure will look similar to that of Figure 1 below 
+#(although not quite identical; we'll get to that later in this quiz).
+
+import numpy as np
+import matplotlib.pyplot as plt
+# CONDICIONES INICIALES
+x0=0.2
+rmin=3.54
+rmax=3.6
+rstep=0.01
+n=1000
+k=500
+
+# FUNCIÓN LOGISTIC MAP
+def logistic_map(rmin,n,x):         #Se requieren sólo 3 condiciones iniciales: R, Iteraciones y X0
+    xn=0
+    x=x0
+    datos=np.zeros(n)
+    l=list(range(0, n))
+    for i in range(n):
+        xn=np.round(rmin*x*(1-x),5)
+        datos[i]=xn
+        x=xn
+    return datos
+
+vector_xn=logistic_map(rmin,n,x0)
+l=list(range(0, n))
+plt.plot(l,vector_xn, 'ro')
+plt.show()
+
