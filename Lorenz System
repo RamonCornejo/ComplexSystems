@@ -1,0 +1,55 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
+from datetime import datetime
+
+# CONDICIONES INICIALES
+sigma=10
+#sigma=16
+beta=8/3
+#beta=4
+ro=28
+#ro=50
+It=100                #Cantidad de iteraciones a estudiar
+dt=0.001                 #Ancho del paso para hacer el cálculo de predicción del próximo paso
+vx0=np.array([0,1,2])  #Condición inicial de las variables x, y y z.
+
+#RK4
+def lorenz_system(It,vx0,dt,sigma,beta,ro):
+    l=list(range(0, It))
+    dxdt=np.array([sigma*(vx0[1]-vx0[0]),(vx0[0]*(ro-vx0[2]))-vx0[1],vx0[0]*vx0[1]-beta*vx0[2]])
+    k0=vx0
+    vx3=vx0
+
+    for i in range(It):
+        k1=dt*np.array([sigma*(k0[1]-k0[0]),k0[0]*(ro-k0[2])-k0[1],k0[0]*k0[1]-beta*k0[2]])
+        k1a1=k0[0]+(1/2)*k1[0]
+        k1a2=k0[1]+(1/2)*k1[1]
+        k1a3=k0[2]+(1/2)*k1[2]
+        k1a=np.array([k1a1,k1a2,k1a3])
+        k2=dt*np.array([sigma*(k1a[1]-k1a[0]),k1a[0]*ro-k1a[0]*k1a[2]-k1a[1],k1a[0]*k1a[1]-beta*k1a[2]])
+        k2a1=k0[0]+(1/2)*k2[0]
+        k2a2=k0[1]+(1/2)*k2[1]
+        k2a3=k0[2]+(1/2)*k2[2]
+        k2a=np.array([k2a1,k2a2,k2a3])
+        k3=dt*np.array([sigma*(k2a[1]-k2a[0]),k2a[0]*ro-k2a[0]*k2a[2]-k2a[1],k2a[0]*k2a[1]-beta*k2a[2]])
+        k3a1=k0[0]+k3[0]
+        k3a2=k0[1]+k3[1]
+        k3a3=k0[2]+k3[2]
+        k3a=np.array([k3a1,k3a2,k3a3])
+        k4=dt*np.array([sigma*(k3a[1]-k3a[0]),k3a[0]*ro-k3a[0]*k3a[2]-k3a[1],k3a[0]*k3a[1]-beta*k3a[2]])
+        vx1=k0+1/6*(k1+2*k2+2*k3+k4)
+        vx3=np.vstack([vx3, vx1])
+        k0=vx1
+
+    fig = plt.figure(figsize = (18, 12))
+    my_cmap = plt.get_cmap('hsv')
+    ax = plt.axes(projection ="3d")
+    sctt=ax.scatter3D(vx3[:,0], vx3[:,1], vx3[:,2], cmap = my_cmap,linestyle ='-.', linewidth = 0.3, alpha = 0.2) 
+    plt.title("Sistema de Lorenz", fontweight ='bold',fontsize=40,)
+    ax.set_xlabel('Eje x', fontweight ='bold') 
+    ax.set_ylabel('Eje y', fontweight ='bold') 
+    ax.set_zlabel('Eje z', fontweight ='bold')
+    fig.colorbar(sctt, ax = ax, shrink = 0.5, aspect = 5)
+    plt.show()
+    
